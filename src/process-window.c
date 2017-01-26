@@ -218,7 +218,6 @@ xtm_process_window_class_init (XtmProcessWindowClass *klass)
 static void
 xtm_process_window_init (XtmProcessWindow *window)
 {
-	GtkWidget *button;
 	GtkWidget *icon;
 	GtkToolItem *xwininfo;
 	gint width, height;
@@ -254,9 +253,6 @@ xtm_process_window_init (XtmProcessWindow *window)
 	g_signal_connect (G_OBJECT (xwininfo), "clicked",
 										G_CALLBACK (xwininfo_clicked_cb), window);
 	gtk_widget_show_all (GTK_WIDGET (xwininfo));
-
-	button = GTK_WIDGET (gtk_builder_get_object (window->builder, "toolbutton-about"));
-	g_signal_connect_swapped (button, "clicked", G_CALLBACK (show_about_dialog), window);
 
 	{
 		GtkWidget *toolitem;
@@ -445,75 +441,6 @@ monitor_update_step_size (XtmProcessWindow *window)
 	g_object_set (window->cpu_monitor, "step-size", refresh_rate / 1000.0, NULL);
 	g_object_set (window->mem_monitor, "step-size", refresh_rate / 1000.0, NULL);
 }
-
-#if !GTK_CHECK_VERSION(2,18,0)
-static void
-url_hook_about_dialog (GtkAboutDialog *dialog, const gchar *uri, gpointer user_data)
-{
-	gchar *command = g_strdup_printf ("exo-open %s", uri);
-	if (!g_spawn_command_line_async (command, NULL))
-	{
-		g_free (command);
-		command = g_strdup_printf ("firefox %s", uri);
-		g_spawn_command_line_async (command, NULL);
-	}
-	g_free (command);
-}
-#endif
-
-static void
-show_about_dialog (XtmProcessWindow *window)
-{
-	const gchar *authors[] = {
-		"(c) 2014 Landry Breuil",
-		"(c) 2014 Harald Judt",
-		"(c) 2014 Peter de Ridder",
-		"(c) 2014 Simon Steinbess",
-		"(c) 2008-2010 Mike Massonnet",
-		"(c) 2005-2008 Johannes Zellner",
-		"",
-		"FreeBSD",
-		"  \342\200\242 Mike Massonnet",
-		"  \342\200\242 Oliver Lehmann",
-		"",
-		"OpenBSD",
-		"  \342\200\242 Landry Breuil",
-		"",
-		"Linux",
-		"  \342\200\242 Johannes Zellner",
-		"  \342\200\242 Mike Massonnet",
-		"",
-		"OpenSolaris",
-		"  \342\200\242 Mike Massonnet",
-		"  \342\200\242 Peter Tribble",
-		NULL };
-	const gchar *license =
-		"This program is free software; you can redistribute it and/or modify\n"
-		"it under the terms of the GNU General Public License as published by\n"
-		"the Free Software Foundation; either version 2 of the License, or\n"
-		"(at your option) any later version.\n";
-
-#if !GTK_CHECK_VERSION(2,18,0)
-	gtk_about_dialog_set_url_hook (url_hook_about_dialog, NULL, NULL);
-#endif
-	gtk_show_about_dialog (GTK_WINDOW (window->window),
-		"program-name", _("Task Manager"),
-		"version", PACKAGE_VERSION,
-		"copyright", "Copyright \302\251 2005-2014 The Xfce development team",
-		"logo-icon-name", "utilities-system-monitor",
-#if !GTK_CHECK_VERSION(3, 0, 0)
-		"icon-name", GTK_STOCK_ABOUT,
-#endif
-		"comments", _("Easy to use task manager"),
-		"license", license,
-		"authors", authors,
-		"translator-credits", _("translator-credits"),
-		"website", "http://goodies.xfce.org/projects/applications/xfce4-taskmanager",
-		"website-label", "goodies.xfce.org",
-		NULL);
-}
-
-
 
 /**
  * Class functions
