@@ -17,11 +17,7 @@
 
 #include "settings.h"
 #include "settings-dialog.h"
-#if GTK_CHECK_VERSION(3, 0, 0)
-#include "settings-dialog-gtk3_ui.h"
-#else
 #include "settings-dialog_ui.h"
-#endif
 
 
 
