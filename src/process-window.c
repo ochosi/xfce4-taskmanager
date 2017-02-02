@@ -29,6 +29,7 @@
 #include <gdk/gdkkeysyms.h>
 
 #include "settings.h"
+#include "settings-dialog.h"
 #include "process-window.h"
 #if GTK_CHECK_VERSION(3, 0, 0)
 #include "process-window-gtk3_ui.h"
@@ -74,7 +75,7 @@ static gboolean xtm_process_window_key_pressed	(XtmProcessWindow *window, GdkEve
 static void	toolbar_update_style				(XtmProcessWindow *window);
 static void	monitor_update_step_size			(XtmProcessWindow *window);
 static void	show_about_dialog				(XtmProcessWindow *window);
-
+static void show_settings_dialog 		(GtkButton *button);
 
 static void
 filter_entry_icon_pressed_cb (GtkEntry *entry,
@@ -86,6 +87,15 @@ filter_entry_icon_pressed_cb (GtkEntry *entry,
 		gtk_entry_set_text (entry, "");
 		gtk_widget_grab_focus(GTK_WIDGET(entry));
 	}
+}
+
+static void
+show_settings_dialog (GtkButton *button)
+{
+	GtkWidget *parent_window = gtk_widget_get_ancestor (GTK_WIDGET (button), GTK_TYPE_WINDOW);
+	GtkWidget *dialog = xtm_settings_dialog_new (GTK_WINDOW (parent_window));
+	xtm_settings_dialog_run (XTM_SETTINGS_DIALOG (dialog));
+	g_object_unref (dialog);
 }
 
 Window
@@ -216,8 +226,7 @@ xtm_process_window_class_init (XtmProcessWindowClass *klass)
 static void
 xtm_process_window_init (XtmProcessWindow *window)
 {
-	GtkWidget *icon;
-	GtkToolItem *xwininfo;
+	GtkWidget *button;
 	gint width, height;
 	gchar *markup;
 
@@ -241,14 +250,11 @@ xtm_process_window_init (XtmProcessWindow *window)
 	window->settings_button = xtm_settings_tool_button_new ();
 	gtk_toolbar_insert (GTK_TOOLBAR (window->toolbar), GTK_TOOL_ITEM (window->settings_button), 1);
 
-	icon = gtk_image_new_from_icon_name ("xc_crosshair", GTK_ICON_SIZE_LARGE_TOOLBAR);
-	xwininfo = gtk_tool_button_new (icon, _("Identify Window"));
-	gtk_widget_set_tooltip_text (GTK_WIDGET (xwininfo), _("Identify an open window by clicking on it."));
-	gtk_toolbar_insert (GTK_TOOLBAR (window->toolbar), GTK_TOOL_ITEM (xwininfo), 2);
-	g_signal_connect (G_OBJECT (xwininfo), "clicked",
-										G_CALLBACK (xwininfo_clicked_cb), window);
-	gtk_widget_show_all (GTK_WIDGET (xwininfo));
+	button = GTK_WIDGET (gtk_builder_get_object (window->builder, "xwininfo"));
+	g_signal_connect (G_OBJECT (button), "clicked", G_CALLBACK (xwininfo_clicked_cb), window);
 
+	button = GTK_WIDGET (gtk_builder_get_object (window->builder, "settings"));
+	g_signal_connect (G_OBJECT (button), "clicked", G_CALLBACK (show_settings_dialog), window);
 	{
 		GtkWidget *toolitem;
 		guint refresh_rate;

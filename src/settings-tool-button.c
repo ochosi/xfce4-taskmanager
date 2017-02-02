@@ -34,7 +34,6 @@ struct _XtmSettingsToolButton
 G_DEFINE_TYPE (XtmSettingsToolButton, xtm_settings_tool_button, GTK_TYPE_MENU_TOOL_BUTTON)
 
 static GtkWidget *	construct_menu					(void);
-static void		show_settings_dialog				(XtmSettingsToolButton *button);
 
 
 
@@ -54,21 +53,14 @@ xtm_settings_tool_button_init (XtmSettingsToolButton *button)
 
 	menu = construct_menu ();
 	gtk_menu_tool_button_set_menu (GTK_MENU_TOOL_BUTTON (button), menu);
-	g_signal_connect (button, "clicked", G_CALLBACK (show_settings_dialog), NULL);
+	//g_signal_connect (button, "clicked", G_CALLBACK (show_settings_dialog), NULL);
 
 	gtk_widget_show_all (GTK_WIDGET (button));
 }
 
 
 
-static void
-show_settings_dialog (XtmSettingsToolButton *button)
-{
-	GtkWidget *parent_window = gtk_widget_get_ancestor (GTK_WIDGET (button), GTK_TYPE_WINDOW);
-	GtkWidget *dialog = xtm_settings_dialog_new (GTK_WINDOW (parent_window));
-	xtm_settings_dialog_run (XTM_SETTINGS_DIALOG (dialog));
-	g_object_unref (dialog);
-}
+
 
 static void
 refresh_rate_toggled (GtkCheckMenuItem *mi, XtmSettings *settings)
@@ -193,4 +185,3 @@ xtm_settings_tool_button_new (void)
 {
 	return g_object_new (XTM_TYPE_SETTINGS_TOOL_BUTTON, NULL);
 }
-
