@@ -81,15 +81,9 @@ xtm_process_statusbar_init (XtmProcessStatusbar *statusbar)
 	GtkWidget *hbox, *hbox_cpu, *hbox_mem;
 	statusbar->settings = xtm_settings_get_default ();
 
-#if GTK_CHECK_VERSION(3, 0, 0)
 	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 16);
 	hbox_cpu = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 16);
 	hbox_mem = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 16);
-#else
-	hbox = gtk_hbox_new (FALSE, 16);
-	hbox_cpu = gtk_hbox_new (FALSE, 16);
-	hbox_mem = gtk_hbox_new (FALSE, 16);
-#endif
 
 	statusbar->label_cpu = gtk_label_new (NULL);
 	gtk_box_pack_start (GTK_BOX (hbox_cpu), statusbar->label_cpu, TRUE, FALSE, 0);
