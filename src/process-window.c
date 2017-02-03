@@ -222,7 +222,7 @@ xtm_process_window_class_init (XtmProcessWindowClass *klass)
 static void
 xtm_process_window_init (XtmProcessWindow *window)
 {
-	GtkWidget *button;
+	GtkWidget *button, *headerbar;
 	gint width, height;
 	gchar *markup;
 
@@ -310,11 +310,15 @@ xtm_process_window_init (XtmProcessWindow *window)
 	gtk_container_add (GTK_CONTAINER (gtk_builder_get_object (window->builder, "scrolledwindow")), window->treeview);
 
 	window->filter_entry = GTK_WIDGET(gtk_builder_get_object (window->builder, "filter-entry"));
+	headerbar = GTK_WIDGET(gtk_builder_get_object (window->builder, "headerbar"));
+	gtk_header_bar_set_custom_title (GTK_HEADER_BAR (headerbar), window->filter_entry);
+	gtk_widget_show_all (GTK_WIDGET (headerbar));
 	g_signal_connect (G_OBJECT(window->filter_entry), "icon-press", G_CALLBACK(filter_entry_icon_pressed_cb), NULL);
 	g_signal_connect (G_OBJECT(window->filter_entry), "changed", G_CALLBACK(filter_entry_keyrelease_handler), window->treeview);
 	gtk_widget_set_tooltip_text (window->filter_entry, _("Filter on process name"));
 
 	gtk_widget_grab_focus (GTK_WIDGET (window->filter_entry));
+
 
 	g_object_unref (window->builder);
 	window->builder = NULL;

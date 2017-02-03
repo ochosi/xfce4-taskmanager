@@ -12,6 +12,14 @@
     <property name="can_focus">False</property>
     <property name="icon_name">xc_crosshair</property>
   </object>
+  <object class="GtkEntry" id="filter-entry">
+    <property name="visible">True</property>
+    <property name="can_focus">True</property>
+    <property name="width_chars">30</property>
+    <property name="primary_icon_stock">gtk-find</property>
+    <property name="secondary_icon_stock">gtk-clear</property>
+    <property name="secondary_icon_sensitive">False</property>
+  </object>
   <object class="GtkWindow" id="process-window">
     <property name="can_focus">False</property>
     <property name="default_width">490</property>
@@ -22,19 +30,6 @@
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="orientation">vertical</property>
-        <child>
-          <object class="GtkToolbar" id="process-toolbar">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="show_arrow">False</property>
-            <property name="icon_size">1</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
         <child>
           <object class="GtkBox" id="root-warning-box">
             <property name="can_focus">False</property>
@@ -240,10 +235,9 @@
       </object>
     </child>
     <child type="titlebar">
-      <object class="GtkHeaderBar">
+      <object class="GtkHeaderBar" id="headerbar">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="title">Task Manager</property>
         <property name="show_close_button">True</property>
         <child>
           <object class="GtkButton" id="settings">
@@ -264,19 +258,6 @@
           </object>
           <packing>
             <property name="position">1</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkEntry" id="filter-entry">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="width_chars">20</property>
-            <property name="primary_icon_stock">gtk-find</property>
-            <property name="secondary_icon_stock">gtk-clear</property>
-            <property name="secondary_icon_sensitive">False</property>
-          </object>
-          <packing>
-            <property name="position">2</property>
           </packing>
         </child>
       </object>
