@@ -129,7 +129,7 @@ init_timeout (void)
 				"Memory: %s\n"
 				"Swap: %s"),
 				num_processes, cpu, memory_info, swap_info);
-		gtk_status_icon_set_tooltip (GTK_STATUS_ICON (status_icon), tooltip);
+		gtk_status_icon_set_tooltip_markup (GTK_STATUS_ICON (status_icon), tooltip);
 	}
 
 	xtm_task_manager_update_model (task_manager);
