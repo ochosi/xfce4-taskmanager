@@ -43,8 +43,12 @@ status_icon_popup_menu (GtkStatusIcon *_status_icon, guint button, guint activat
 	if (menu == NULL)
 	{
 		GtkWidget *mi;
+		GtkWidget *icon;
+
+		icon = gtk_image_new_from_icon_name ("gtk-quit", GTK_ICON_SIZE_MENU);
 		menu = gtk_menu_new ();
-		mi = gtk_image_menu_item_new_from_stock (GTK_STOCK_QUIT, NULL);
+		mi = gtk_image_menu_item_new_with_label (_("Quit"));
+		gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (mi), icon);
 		g_signal_connect (mi, "activate", G_CALLBACK (gtk_main_quit), NULL);
 		gtk_container_add (GTK_CONTAINER (menu), mi);
 		gtk_widget_show_all (menu);
