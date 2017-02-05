@@ -53,6 +53,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="border_width">6</property>
+                <property name="orientation">vertical</property>
                 <child>
                   <object class="GtkBox" id="vbox1">
                     <property name="visible">True</property>
@@ -150,33 +151,6 @@
                                     <property name="expand">False</property>
                                     <property name="fill">False</property>
                                     <property name="position">5</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <object class="GtkBox" id="hbox-toolbar-style">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <property name="spacing">6</property>
-                                    <child>
-                                      <object class="GtkLabel" id="label-toolbar-style">
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">False</property>
-                                        <property name="label" translatable="yes">Toolbar style:</property>
-                                      </object>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">False</property>
-                                        <property name="position">0</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <placeholder/>
-                                    </child>
-                                  </object>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">False</property>
-                                    <property name="position">6</property>
                                   </packing>
                                 </child>
                               </object>
@@ -287,7 +261,6 @@
                 <child>
                   <object class="GtkBox" id="vbox2">
                     <property name="can_focus">False</property>
-                    <property name="orientation">vertical</property>
                     <property name="spacing">6</property>
                     <child>
                       <object class="GtkFrame" id="frame-information">

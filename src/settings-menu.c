@@ -15,52 +15,18 @@
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
 
-#include "settings-tool-button.h"
+#include "settings-menu.h"
 #include "settings-dialog.h"
 #include "settings.h"
 
-
-
-typedef struct _XtmSettingsToolButtonClass XtmSettingsToolButtonClass;
-struct _XtmSettingsToolButtonClass
-{
-	GtkMenuToolButtonClass	parent_class;
-};
-struct _XtmSettingsToolButton
-{
-	GtkMenuToolButton	parent;
-	/*<private>*/
-};
-G_DEFINE_TYPE (XtmSettingsToolButton, xtm_settings_tool_button, GTK_TYPE_MENU_TOOL_BUTTON)
-
-static GtkWidget *	construct_menu					(void);
-
-
-
 static void
-xtm_settings_tool_button_class_init (XtmSettingsToolButtonClass *klass)
+show_settings_dialog (GtkButton *button)
 {
-	xtm_settings_tool_button_parent_class = g_type_class_peek_parent (klass);
+	GtkWidget *parent_window = gtk_widget_get_ancestor (GTK_WIDGET (button), GTK_TYPE_WINDOW);
+	GtkWidget *dialog = xtm_settings_dialog_new (GTK_WINDOW (parent_window));
+	xtm_settings_dialog_run (XTM_SETTINGS_DIALOG (dialog));
+	g_object_unref (dialog);
 }
-
-static void
-xtm_settings_tool_button_init (XtmSettingsToolButton *button)
-{
-	GtkWidget *menu;
-
-	gtk_tool_button_set_icon_name(GTK_TOOL_BUTTON (button), "gtk-preferences");
-	gtk_tool_button_set_use_underline (GTK_TOOL_BUTTON (button), TRUE);
-
-	menu = construct_menu ();
-	gtk_menu_tool_button_set_menu (GTK_MENU_TOOL_BUTTON (button), menu);
-	//g_signal_connect (button, "clicked", G_CALLBACK (show_settings_dialog), NULL);
-
-	gtk_widget_show_all (GTK_WIDGET (button));
-}
-
-
-
-
 
 static void
 refresh_rate_toggled (GtkCheckMenuItem *mi, XtmSettings *settings)
@@ -146,13 +112,60 @@ menu_append_item (GtkMenu *menu, gchar *title, gchar *setting_name, XtmSettings 
 	g_free (notify_name);
 }
 
-static GtkWidget *
-construct_menu (void)
+static void
+show_about_dialog (GtkWindow *window)
+{
+	const gchar *authors[] = {
+		"(c) 2016 Simon Steinbeiss",
+		"(c) 2014 Landry Breuil",
+		"(c) 2014 Harald Judt",
+		"(c) 2014 Peter de Ridder",
+		"(c) 2008-2010 Mike Massonnet",
+		"(c) 2005-2008 Johannes Zellner",
+		"",
+		"FreeBSD",
+		"  \342\200\242 Mike Massonnet",
+		"  \342\200\242 Oliver Lehmann",
+		"",
+		"OpenBSD",
+		"  \342\200\242 Landry Breuil",
+		"",
+		"Linux",
+		"  \342\200\242 Johannes Zellner",
+		"  \342\200\242 Mike Massonnet",
+		"",
+		"OpenSolaris",
+		"  \342\200\242 Mike Massonnet",
+		"  \342\200\242 Peter Tribble",
+		NULL };
+	const gchar *license =
+		"This program is free software; you can redistribute it and/or modify\n"
+		"it under the terms of the GNU General Public License as published by\n"
+		"the Free Software Foundation; either version 2 of the License, or\n"
+		"(at your option) any later version.\n";
+
+	//gtk_about_dialog_set_url_hook (url_hook_about_dialog, NULL, NULL);
+	gtk_show_about_dialog (window,
+		"program-name", _("Task Manager"),
+		"version", PACKAGE_VERSION,
+		"copyright", "Copyright \302\251 2005-2016 The Xfce development team",
+		"logo-icon-name", "utilities-system-monitor",
+		"comments", _("Easy to use task manager"),
+		"license", license,
+		"authors", authors,
+		"translator-credits", _("translator-credits"),
+		"website", "http://goodies.xfce.org/projects/applications/xfce4-taskmanager",
+		"website-label", "goodies.xfce.org",
+		NULL);
+}
+
+GtkWidget *construct_menu (void)
 {
 	XtmSettings *settings = xtm_settings_get_default ();
 	GtkWidget *menu = gtk_menu_new ();
 	GtkWidget *refresh_rate_menu;
 	GtkWidget *mi;
+	GtkWidget *window;
 
 	menu_append_item (GTK_MENU (menu), _("Show all processes"), "show-all-processes", settings);
 
@@ -173,15 +186,23 @@ construct_menu (void)
 	menu_append_item (GTK_MENU (menu), _("CPU"), "column-cpu", settings);
 	menu_append_item (GTK_MENU (menu), _("Priority"), "column-priority", settings);
 
+	mi = gtk_separator_menu_item_new ();
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), mi);
+
+	mi = gtk_menu_item_new_with_label (_("Settings"));
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), mi);
+	g_signal_connect (mi, "activate", G_CALLBACK (show_settings_dialog), NULL);
+
+	mi = gtk_menu_item_new_with_label (_("About"));
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), mi);
+	window = gtk_widget_get_ancestor (mi, GTK_TYPE_WINDOW);
+	g_signal_connect (mi, "activate", G_CALLBACK (show_about_dialog), GTK_WINDOW (window));
+
+	mi = gtk_menu_item_new_with_label (_("Quit"));
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), mi);
+	g_signal_connect (mi, "activate", G_CALLBACK (gtk_main_quit), NULL);
+
 	gtk_widget_show_all (menu);
 
 	return menu;
-}
-
-
-
-GtkWidget *
-xtm_settings_tool_button_new (void)
-{
-	return g_object_new (XTM_TYPE_SETTINGS_TOOL_BUTTON, NULL);
 }
